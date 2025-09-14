@@ -1,0 +1,19 @@
+{
+  "name": "projectmanagement",
+  "version": "1.0.0",
+  "description": "Project Management Application 01",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "backend",
+    "API"
+  ],
+  "author": "Rohit Kumar",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}
