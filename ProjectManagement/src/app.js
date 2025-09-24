@@ -27,4 +27,8 @@ app.get("/", (req, res) => {
   res.send("Welcome to Basecampy!");
 });
 
+// Importing Authentication Routes
+import authRouter from "./routes/auth.routes.js";
+app.use("/api/v1/auth", authRouter);
+
 export default app;
