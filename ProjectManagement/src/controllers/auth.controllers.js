@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/api-response.js";
 import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { emailVerificationMailGenContent, sendEmail } from "../utils/mail.js";
+import { trusted } from "mongoose";
 
 // Function to generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -82,4 +83,48 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser };
+const login = asyncHandler(async (req, res) => {
+  const { email, password, username } = req.body;
+
+  // Email is Compulsary
+  if (!email) throw new ApiError(400, "Email is Required !");
+
+  // Checking email in database i.e., user exist or not
+  const user = await User.findOne({ email });
+  if (!user) throw new ApiError(400, "User doesn't exist !");
+
+  const isPasswordValid = await user.isPasswordCorrect(password);
+  if (!isPasswordValid)
+    throw new ApiError(400, "Incorrect Password !, Try Again .. ");
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    User._id,
+  );
+
+  const loggedInUser = await User.findById(User._id).select(
+    "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
+  );
+
+  //Setting Cookies
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in Successfully !",
+      ),
+    );
+});
+
+export { registerUser, login };
