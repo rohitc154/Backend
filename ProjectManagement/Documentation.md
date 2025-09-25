@@ -20,8 +20,16 @@ Validation Tools :
 - Take input from user
 - Validate
 - if user exists :
-  - if password is correct
+  - Check password is correct
   - Generate TOKENS
   - Send tokens in cookies
 
-Note : Express don't have coookies access direcly
+Note : Express don't have coookies access directly
+
+## Decoding Authentication middleware
+
+- (req, res) => {} --> req = {}
+- First we'll intercept the request in the middleware
+- Access the accessToken
+- Decode the information out
+- now, inject the information in the request
