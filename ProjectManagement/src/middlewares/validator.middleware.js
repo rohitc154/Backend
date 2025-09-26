@@ -3,14 +3,17 @@ import { ApiError } from "../utils/api-error.js";
 
 export const validate = (req, res, next) => {
   const errors = validationResult(req);
-  if (errors.isEmpty()) {
-    return next();
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array().map((err) => ({
+        field: err.param,
+        message: err.msg,
+      })),
+    });
   }
-  const extractedErrors = [];
-  errors.array().map((err) =>
-    extractedErrors.push({
-      [err.path]: err.msg,
-    }),
-  );
-  throw new ApiError(422, "Received Data not validated !", extractedErrors);
+
+  next();
 };
+
+export default validate;
