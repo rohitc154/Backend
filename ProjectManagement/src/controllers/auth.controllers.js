@@ -98,10 +98,10 @@ const login = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Incorrect Password !, Try Again .. ");
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    User._id,
+    user._id,
   );
 
-  const loggedInUser = await User.findById(User._id).select(
+  const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
   );
 
